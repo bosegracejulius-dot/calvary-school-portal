@@ -115,7 +115,6 @@ export function CalvaryAI() {
       )}
       <button
         onClick={() => setOpen((o) => !o)}
-        aria label="Open Calvary AI assistant"
         aria-label={open ? "Close Calvary AI" : "Ask Calvary AI"}
         className={`fixed bottom-5 right-5 z-50 flex items-center gap-2 rounded-full bg-ink-gradient py-2 pl-2 pr-5 text-ink-foreground shadow-lift transition hover:scale-105 sm:bottom-6 sm:right-6 ${open ? "max-sm:hidden" : "animate-pulse-ring"}`}
       >
