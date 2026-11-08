@@ -1,23 +1,24 @@
-import { createFileRoute } from "@tanstack/react-router";
-
-// The home route ships no og:image, so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
-export const Route = createFileRoute("/")({
-  component: Index,
-});
-
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
-function Index() {
-  return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
-  );
+import { createFileRoute, Link } from '@tanstack/react-router';
+import { useSuspenseQuery } from '@tanstack/react-query';
+import { ArrowRight, BookOpen, HeartHandshake, MapPin } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Section, SectionHeading, ToConfirm } from '@/components/site/ui';
+import { NewsItems } from '@/components/site/NewsItems';
+import { LEVELS, FACILITIES, MISSION, SCHOOL } from '@/lib/school';
+import { siteQuery } from '@/lib/site-query';
+import { splitEvents, formatDate } from '@/lib/content';
+import { schoolHead } from '@/lib/seo';
+export const Route = createFileRoute('/')({ head: () => schoolHead('Calvary Group of Schools, Arepo', 'Faith, character and holistic education from pre-school to senior secondary at Calvary Group of Schools, Arepo, Ogun State.'), loader: ({ context }) => context.queryClient.ensureQueryData(siteQuery), component: Home, errorComponent: () => <Section><h1 className="text-3xl">School information is temporarily unavailable</h1><Button onClick={() => window.location.reload()} className="mt-5">Try again</Button></Section>, notFoundComponent: () => <Section>Page not found.</Section> });
+function Home() {
+ const { data } = useSuspenseQuery(siteQuery); const { upcoming } = splitEvents(data.events);
+ return <>
+ <section className="relative isolate overflow-hidden"><img src="/images/building.jpg" alt="Calvary Group of Schools campus in Arepo" fetchPriority="high" className="absolute inset-0 -z-20 h-full w-full object-cover"/><div className="absolute inset-0 -z-10 bg-hero-overlay"/><div className="mx-auto max-w-7xl px-6 py-16 text-primary-foreground md:py-24"><p className="text-sm font-semibold uppercase text-gold">Trust in God · Established 2005</p><h1 className="mt-5 max-w-3xl text-4xl font-semibold leading-tight sm:text-5xl md:text-7xl">Calvary Group<br/>of Schools</h1><p className="mt-6 max-w-xl text-lg leading-relaxed opacity-90">Growing in knowledge.<br/>Grounded in faith. Ready for tomorrow.</p><div className="mt-8 flex flex-wrap gap-3"><Button asChild variant="accent" size="lg"><Link to="/admissions">Admission enquiry <ArrowRight/></Link></Button><Button asChild variant="heroOutline" size="lg"><Link to="/about">Meet Calvary</Link></Button></div><p className="mt-10 flex items-center gap-2 text-sm opacity-80"><MapPin className="size-4"/>Arepo, Ogun State, Nigeria</p></div></section>
+ <div className="border-b bg-card"><div className="mx-auto grid max-w-7xl grid-cols-2 gap-5 px-6 py-7 md:grid-cols-4">{LEVELS.map((l,i) => <Link key={l.id} to="/academics" className="flex items-center gap-3"><span className="font-display text-2xl text-accent">0{i+1}</span><div><p className="text-sm font-semibold text-primary">{l.name}</p><p className="mt-1 text-xs text-muted-foreground">{l.tag}</p></div></Link>)}</div></div>
+ <Section className="grid items-center gap-12 md:grid-cols-2"><div><SectionHeading eyebrow="Welcome to Calvary" title="A foundation for life."/><p className="mt-6 text-lg leading-relaxed text-muted-foreground">Since {SCHOOL.founded}, Calvary has brought together academic learning, character and faith. From a child’s first classroom to the next step into tertiary education, our focus is the whole child.</p><Button asChild variant="link" className="mt-5 px-0"><Link to="/about">Our story <ArrowRight/></Link></Button></div><img src="/images/calvaryschool.jpg" alt="Calvary school campus" loading="lazy" className="aspect-[4/3] w-full rounded-lg object-cover"/></Section>
+ <div className="bg-secondary"><Section><SectionHeading eyebrow="Learning at every stage" title="Room to learn. Space to grow."/><div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">{LEVELS.map(l => <article key={l.id} className="rounded-lg bg-card p-6"><BookOpen className="size-7 text-accent"/><p className="mt-5 text-xs uppercase text-muted-foreground">{l.tag}</p><h3 className="mt-2 text-2xl text-primary">{l.name}</h3><p className="mt-4 text-sm leading-relaxed text-muted-foreground">{l.text}</p><Button asChild variant="link" className="mt-4 px-0"><Link to="/academics">Explore <ArrowRight/></Link></Button></article>)}</div></Section></div>
+ <Section><SectionHeading eyebrow="Life on campus" title="Beyond the classroom."/><div className="mt-10 grid gap-6 md:grid-cols-3">{FACILITIES.slice(0,3).map(f => <Link to="/facilities" key={f.name}><img src={f.image} alt={f.name} loading="lazy" className="aspect-[4/3] w-full rounded-lg object-cover"/><h3 className="mt-4 text-xl text-primary">{f.name}</h3></Link>)}</div></Section>
+ <div className="bg-primary text-primary-foreground"><Section className="grid gap-10 md:grid-cols-[1fr_2fr]"><div><HeartHandshake className="size-10 text-gold"/><h2 className="mt-5 text-3xl">Our mission</h2></div><div><p className="text-xl leading-relaxed">{MISSION}</p><ToConfirm className="mt-6">A separate school vision statement.</ToConfirm></div></Section></div>
+ <Section><div className="mb-10 flex flex-wrap items-end justify-between gap-5"><SectionHeading eyebrow="From our school" title="News & announcements"/><Button asChild variant="link"><Link to="/news">All news <ArrowRight/></Link></Button></div><NewsItems posts={data.posts.slice(0,3)}/><div className="mt-14 border-t pt-8"><h3 className="text-2xl text-primary">Upcoming events</h3>{upcoming.length ? upcoming.slice(0,3).map(e => <p key={e.id} className="mt-4">{formatDate(e.starts_at)} — {e.title}</p>) : <p className="mt-4 text-muted-foreground">No upcoming dates have been published. Please contact the school for the current calendar.</p>}</div></Section>
+ <div className="bg-secondary"><Section className="flex flex-wrap items-center justify-between gap-8 py-12"><div><p className="eyebrow">Your child’s next chapter</p><h2 className="mt-3 text-3xl text-primary">Start a conversation with Calvary.</h2></div><Button asChild variant="accent" size="lg"><Link to="/admissions">Enquire about admission <ArrowRight/></Link></Button></Section></div>
+ </>;
 }
