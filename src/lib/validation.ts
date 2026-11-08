@@ -1,0 +1,2 @@
+import { z } from 'zod';
+export const enquirySchema = z.object({ kind: z.enum(['contact', 'admission']), name: z.string().trim().min(2).max(120), email: z.string().trim().email().max(200), phone: z.string().trim().max(40), subject: z.string().trim().max(200), child_name: z.string().trim().max(120), level: z.string().max(80), message: z.string().trim().min(2).max(4000), website: z.string().max(0), consent: z.literal(true) });
