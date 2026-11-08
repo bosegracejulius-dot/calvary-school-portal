@@ -1,0 +1,6 @@
+import { createFileRoute } from '@tanstack/react-router';
+import { PageHero, Section, SectionHeading, ToConfirm } from '@/components/site/ui';
+import { FACILITIES, UNCONFIRMED_FACILITIES } from '@/lib/school';
+import { schoolHead } from '@/lib/seo';
+export const Route = createFileRoute('/facilities')({ head: () => schoolHead('School Facilities', 'Explore Calvary’s science laboratories, grounds, school hall, classrooms and buses.'), component: Facilities });
+function Facilities() { return <><PageHero eyebrow="Our campus" title="School facilities" intro="Places for learning, discovery and everyday school life." image="/images/sch-hall.jpg"/><Section><SectionHeading eyebrow="Explore Calvary" title="Space for every possibility."/><div className="mt-10 grid gap-x-8 gap-y-12 sm:grid-cols-2">{FACILITIES.map(f => <article key={f.name}><img src={f.image} alt={f.name} loading="lazy" className="aspect-[3/2] w-full rounded-lg object-cover"/><h2 className="mt-5 text-2xl text-primary">{f.name}</h2><p className="mt-3 text-muted-foreground">{f.text}</p></article>)}</div><ToConfirm className="mt-10">{UNCONFIRMED_FACILITIES.join(', ')}. These facilities are not presented as verified.</ToConfirm></Section></>; }
