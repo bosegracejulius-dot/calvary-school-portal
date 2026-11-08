@@ -15,6 +15,13 @@
       "when": 1794062951483,
       "tag": "0001_kb_files_policies",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1794150708938,
+      "tag": "0002_secure_staff_setup_and_knowledge_index",
+      "breakpoints": true
     }
   ]
 }
